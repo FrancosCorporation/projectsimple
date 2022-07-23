@@ -1,17 +1,24 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+let visibility = false;
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const toggleVisibility = () => {
+  visibility = !visibility
+  render();
+};
+const render = () => {
+  const jsx = (
+    <div>
+      <h1>
+        Visibility
+          </h1>
+      <button onClick={toggleVisibility}>
+        {visibility ? 'Hide Details' : 'Show'}
+      </button>
+      {visibility && (<p>Its is detais in hide</p>)}
+    </div>
+  );
+  ReactDOM.render(jsx, document.getElementById('root'))
+};
+
+render();
