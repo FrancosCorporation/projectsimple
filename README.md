@@ -29,7 +29,7 @@ npm ci
 npm run dev
 ```
 
-O Vite abre a aplicação em [http://localhost:3000](http://localhost:3000).
+O Vite escuta apenas na máquina local em [http://localhost:3000](http://localhost:3000).
 
 ## Comandos disponíveis
 

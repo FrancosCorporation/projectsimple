@@ -4,11 +4,12 @@
 
 ## Atualização de implementação — 2026-10-11
 
-O usuário ampliou o escopo para implementar também os itens estratégicos que estavam adiados. Resultado: `SEC-01`, `BUG-01`, `DEVOPS-01/02/03`, `DOC-01/02` e `IMP-01/02` implementados. `TEST-01` continua pendente porque ainda não há suíte de testes; os checks estáticos e o build foram executados, sem executar testes.
+O usuário ampliou o escopo para implementar também os itens estratégicos que estavam adiados. Resultado: `SEC-01/02`, `BUG-01`, `DEVOPS-01/02/03`, `DOC-01/02` e `IMP-01/02` implementados. `TEST-01` continua pendente porque ainda não há suíte de testes; os checks estáticos e o build foram executados, sem executar testes.
 
 | Item | Estado | Resultado |
 |---|---|---|
 | SEC-01 | Concluído | CRA removido; novo lock npm auditado sem vulnerabilidades. |
+| SEC-02 | Concluído | Servidor e preview do Vite escutam apenas em `127.0.0.1`; o README esclarece o bind local. |
 | BUG-01 | Concluído | Texto e tela do exercício reescritos em português claro. |
 | DEVOPS-01 | Concluído | `package-lock.json` é o único lockfile; `yarn.lock` removido. |
 | DEVOPS-02 | Concluído | Docker Node 24 multi-stage, `npm ci`, `serve` pinado e runtime como `node`. |
@@ -69,6 +70,7 @@ Validação do documento: `python3 /tmp/validate.py projectsimple` deve imprimir
 | ID | Item | Sev | Esforço | Wave |
 |---|---|---|---|---|
 | SEC-01 | Vulnerabilidades do react-scripts 4 (npm audit: 210) | P1 | Médio | 2 |
+| SEC-02 | Servidor local Vite escuta em todas as interfaces | P2 | Baixo | 1 |
 | DEVOPS-01 | Lockfile duplo (npm + yarn) | P1 | Baixo | 1 |
 | DEVOPS-02 | Dockerfile: Node 16 EOL, fallback npm, serve sem pin | P2 | Baixo | 2 |
 | DEVOPS-03 | Dependência ociosa `web-vitals` | P3 | Baixo | 1 |
@@ -82,6 +84,19 @@ Validação do documento: `python3 /tmp/validate.py projectsimple` deve imprimir
 Legenda das waves: **1** = correções rápidas sem risco de regressão; **2** = segurança e base (exige cuidado); **3** = polimento; **4** = estratégico, fora do escopo desta rodada (detalhes em §8 e §9).
 
 ## 3. Segurança
+
+### SEC-02 — Servidor local do Vite escutava em todas as interfaces [P2]
+
+- **Arquivo:** `package.json:10-13` e `vite.config.mjs:6-14`.
+- **Evidência:** os scripts `dev`, `start` e `preview` passavam `--host 0.0.0.0`; a configuração do servidor e do preview também fixava `host: '0.0.0.0'`. O README descreve esses comandos como execução local. O Compose publica o container em `127.0.0.1:3000`, mas isso não restringe o servidor iniciado diretamente pelo npm.
+- **Impacto:** executar `npm run dev` ou `npm run preview` poderia deixar a aplicação de desenvolvimento acessível por outras interfaces de rede da máquina.
+- **Mudança:** remover os flags de host dos scripts, configurar Vite e preview para `127.0.0.1` e explicitar o bind local no README.
+- **Aceite:** nenhum script/configuração local usa `0.0.0.0`; servidor e preview ficam limitados ao loopback. O Compose segue com publicação local.
+- **Verificação:**
+  ```bash
+  ! rg -n '0\.0\.0\.0' package.json vite.config.mjs
+  rg -n "host: '127\.0\.0\.1'" vite.config.mjs
+  ```
 
 ### SEC-01 — react-scripts 4.0.1 com 210 vulnerabilidades no `npm audit` [P1]
 
@@ -214,6 +229,7 @@ grep -n "<title>" public/index.html       # aceite: <title>projectsimple</title>
 2. DOC-01 — adicionar `docker-compose.yml` **ou** corrigir o comando em `README.md:10`.
 3. BUG-01 — corrigir o texto em `src/index.js:18`.
 4. DEVOPS-03 — remover `web-vitals` de `package.json:12` e regenerar o lock.
+5. SEC-02 — limitar os servidores Vite locais ao loopback.
 
 *Gate da wave:* `git ls-files` com um único lockfile; o comando documentado no README executa; `grep` de BUG-01 e DEVOPS-03 sem saída.
 
@@ -289,5 +305,6 @@ A rodada está pronta quando **todos** os itens abaixo forem verdadeiros:
 - [x] `rg -n "node:16|\|\| npm install" Dockerfile` sem saída; `docker build` verde e imagem roda como usuário `node` (DEVOPS-02).
 - [x] Arquivos de ícone/manifest referenciados existem e o título é `projectsimple` (DOC-02).
 - [x] IMP-01 e IMP-02 registrados e executados no ADR (§9).
+- [x] SEC-02 — scripts/configuração Vite limitam dev e preview a `127.0.0.1`.
 
 *Fim do plano. O diagnóstico foi feito em 2026-10-05; o estado de execução e a validação remota foram atualizados em 2026-10-11.*
