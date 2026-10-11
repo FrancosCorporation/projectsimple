@@ -1,61 +1,62 @@
 # projectsimple
 
-## 🐳 Instalação e Execução (Docker) — recomendado
+Um laboratório pequeno de React para explorar estado e renderização condicional.
+Use o botão para abrir e fechar os detalhes e acompanhe a mudança na interface.
 
-### Pré-requisitos
-- [Docker](https://docs.docker.com/get-docker/) + Docker Compose
+## Executar com Docker
 
-### Rodar com Docker
+Requisitos: Docker Engine e Docker Compose.
+
 ```bash
 docker compose up --build
 ```
 
+Abra [http://localhost:3000](http://localhost:3000). O serviço é publicado apenas
+na máquina local.
 
-### Sem Docker (local)
-```bash
-npm install
-npm start
-```
-
-
-Experimento mínimo em **React** (Create React App) para praticar renderização
-condicional e estado.
-
-![React](https://img.shields.io/badge/React-17-61DAFB?style=flat-square&logo=react&logoColor=black)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
-![Status](https://img.shields.io/badge/status-estudo-lightgrey?style=flat-square)
-
-## Sobre
-
-**Projeto de estudo** com o esqueleto do CRA e um único exercício de
-renderização manual (`ReactDOM.render`): um botão alterna a visibilidade de um
-bloco de detalhes ("Show"/"Hide Details") usando estado em variável e
-re-render explícito — um degrau anterior ao `useState`.
-
-## Funcionalidades
-
-Comprovadas pelo código em `src/index.js`:
-
-- Renderização manual com `ReactDOM.render`.
-- Botão que alterna a visibilidade de um parágrafo (`visibility`).
-- Estrutura padrão do Create React App (`public/index.html`, manifest,
-  scripts de start/build/test).
-
-## Como rodar
+Para encerrar:
 
 ```bash
-npm install     # ou yarn
-npm start       # http://localhost:3000
+docker compose down
 ```
 
-## Estrutura do projeto
+## Executar localmente
 
+Requisitos: Node.js 22.13+ ou 24 LTS e npm.
+
+```bash
+npm ci
+npm run dev
 ```
-public/          # index.html + manifest
-src/index.js     # exercício de visibilidade condicional
+
+O Vite abre a aplicação em [http://localhost:3000](http://localhost:3000).
+
+## Comandos disponíveis
+
+| Comando | Ação |
+|---|---|
+| `npm run dev` | inicia o servidor de desenvolvimento |
+| `npm run build` | gera os arquivos de produção em `dist/` |
+| `npm run preview` | serve a compilação localmente |
+| `npm run lint` | verifica JavaScript, JSX e regras dos hooks |
+
+## Tecnologias
+
+- React 19 e Vite 8
+- JavaScript com ESLint flat config
+- Docker multi-stage com processo sem privilégios de root
+
+## Estrutura
+
+```text
+index.html                 # entrada HTML e metadados
+src/App.jsx                # exercício de estado e interface
+src/App.css                # estilos do exercício
+src/index.css              # estilos globais e acessibilidade
+src/main.jsx               # montagem com createRoot e StrictMode
+public/                    # ícone e manifest da aplicação
 ```
 
 ## Licença
 
-MIT — veja [LICENSE](LICENSE).
+MIT — consulte [LICENSE](LICENSE).

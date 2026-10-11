@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "projectsimple — laboratório de React",
+  "short_name": "projectsimple",
+  "description": "Um pequeno laboratório para explorar estado e renderização condicional em React.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#f4f3ed",
+  "background_color": "#f4f3ed"
+}

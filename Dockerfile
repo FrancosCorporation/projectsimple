@@ -1,18 +1,21 @@
 # Build
-FROM node:16-alpine AS build
+FROM node:24-bookworm-slim AS build
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci || npm install
-COPY . .
-ARG REACT_APP_*=""
-ENV GENERATE_SOURCEMAP=false
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY index.html ./
+COPY vite.config.mjs ./
+COPY src ./src
+COPY public ./public
 RUN npm run build
 
-# Serve
-FROM node:20-alpine
+# Serve the static build as an unprivileged user.
+FROM node:24-bookworm-slim AS runtime
 WORKDIR /app
-RUN npm i -g serve
-COPY --from=build /app/build ./build
-ENV PORT=3000
+ENV NODE_ENV=production PORT=3000
+RUN npm install --global --omit=dev serve@14.2.6 \
+  && npm cache clean --force
+COPY --from=build --chown=node:node /app/dist ./dist
+USER node
 EXPOSE 3000
-CMD ["sh", "-c", "serve -s build -l $PORT"]
+CMD ["serve", "-s", "dist", "-l", "3000"]
