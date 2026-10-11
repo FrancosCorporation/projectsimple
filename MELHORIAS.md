@@ -18,7 +18,7 @@ O usuário ampliou o escopo para implementar também os itens estratégicos que 
 | DOC-02 | Concluído | Favicon e manifest válidos; título, idioma e descrição localizados. |
 | IMP-01/02 | Concluído | ADR registra a migração CRA→Vite e React 17→19; `createRoot` e hooks em uso. |
 
-Validações executadas: `npm ci`, audit (0), lint, build, `docker compose config --quiet`, Docker build/inspeção e `git diff --check`; HTML, manifest e referências de ícone conferidos. Não iniciei o container e não executei testes.
+Validações executadas: `npm ci`, audit (0), lint, build, `docker compose config --quiet`, Docker build/inspeção e `git diff --check`; HTML, manifest e referências de ícone conferidos. O CI remoto de `4782ddda159f5e12a92d7e3ba1072f0a70ae6f65` passou. Não iniciei o container e não executei testes.
 
 ## 0. Como usar este documento
 
@@ -33,7 +33,7 @@ Como ler:
 
 Validação do documento: `python3 /tmp/validate.py projectsimple` deve imprimir `OK projectsimple`.
 
-## 1. Diagnóstico executivo
+## 1. Diagnóstico executivo original — 2026-10-05
 
 **Stack confirmada:** CRA com `react-scripts ^4.0.1` (package.json:11), preso em `4.0.1` no lock (package-lock.json:11191-11192), e React `^17.0.1` (package.json:9-10). Aplicação: um único arquivo `src/index.js` (24 linhas) — toggle de visibilidade com `ReactDOM.render` manual. Repositório: 11 arquivos versionados, branch `master`.
 
@@ -50,7 +50,7 @@ Validação do documento: `python3 /tmp/validate.py projectsimple` deve imprimir
 | `README.md:29-57` | "Sobre", funcionalidades e estrutura coerentes com o código de `src/index.js`. |
 | `LICENSE` + `README.md:59-61` | Licença MIT declarada, arquivo presente no repo. |
 
-**Pontos quebrados:**
+**Pontos quebrados encontrados na análise inicial:**
 
 | Arquivo:linha | Problema | Item |
 |---|---|---|
@@ -270,12 +270,10 @@ grep -rn "ReactDOM.render" src/   # hoje: src/index.js:21 | aceite: sem saída
 npm ls react --depth=0            # hoje: react@17.x | aceite: >= 18
 ```
 
-**Riscos desta rodada (monitorar, não são itens):**
+**Riscos residuais:**
 
-- Executar SEC-01/IMP-01 sem o TEST-01 deixa qualquer migração às cegas — manter a ordem das waves da §8.
-- `Dockerfile:7` declara `ARG REACT_APP_*=""` (nome literal com asterisco); ao mexer no Dockerfile (DEVOPS-02), validar como variáveis `REACT_APP_*` são realmente repassadas no build — não está confirmado que funcione como curinga.
-- `package.json:20-25` amarra o ESLint aos presets do CRA: sair do `react-scripts` exige config standalone do ESLint — incluir no escopo do ADR da IMP-01.
-- Sem `docker-compose.yml` versionado, não há como testar o caminho "recomendado" do README em CI (DOC-01).
+- `TEST-01` continua pendente; o comportamento abrir/fechar detalhes ainda não tem cobertura automatizada.
+- A validação documental opcional `python3 /tmp/validate.py projectsimple` depende de um script externo que não está neste repositório.
 
 ## 10. Definição de pronto (DoD)
 
@@ -292,4 +290,4 @@ A rodada está pronta quando **todos** os itens abaixo forem verdadeiros:
 - [x] Arquivos de ícone/manifest referenciados existem e o título é `projectsimple` (DOC-02).
 - [x] IMP-01 e IMP-02 registrados e executados no ADR (§9).
 
-*Fim do plano. Gerado por leitura direta do código em 2026-10-05 a partir de `/home/servidor/Git/projectsimple` — leitura integral de package.json, src/index.js, Dockerfile, README.md, .gitignore, .dockerignore, public/index.html e public/manifest.json, mais `git ls-files`, `git branch --show-current` (branch `master`) e `npm audit --package-lock-only`. Nenhum arquivo:linha foi inventado; valide com `python3 /tmp/validate.py projectsimple`.*
+*Fim do plano. O diagnóstico foi feito em 2026-10-05; o estado de execução e a validação remota foram atualizados em 2026-10-11.*
